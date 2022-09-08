@@ -48,6 +48,9 @@
          <layout class="QHBoxLayout" name="horizontalLayout_4">
           <item>
            <widget class="QLineEdit" name="lineEdit">
+            <property name="maxLength">
+             <number>7</number>
+            </property>
             <property name="placeholderText">
              <string>#HEX</string>
             </property>

@@ -2,12 +2,15 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QGraphicsScene>
 #include <QPixmap>
 #include <QTableWidget>
 #include <QTableWidgetItem>
 #include <QImage>
 #include <QLabel>
+#include <QtMath>
+#include <QPainter>
+#include <QDebug>
+#include <QSet>
 
 
 QT_BEGIN_NAMESPACE
@@ -45,11 +48,10 @@ private:
     Ui::MainWindow *ui;
     ColorModel colMod;
     QImage* img;
-    QLabel* im;
-    int hue,saturation;
-    double val;
+    double hue,saturation, val;
     QRect rect;
     QPoint center;
+    QPixmap circle;
     double red,green,blue;
 
     void paintEvent(QPaintEvent*);
