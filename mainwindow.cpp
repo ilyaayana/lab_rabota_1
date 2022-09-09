@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     colMod = HSV;
 
     img = new QImage(150,150,QImage::Format_ARGB32);
-    circle = QPixmap("C:\\Personal\\example\\lol.png");
+    circle = QPixmap(":/new/prefix1/lol.png");
     circle = circle.scaled(100,100,Qt::IgnoreAspectRatio);
     center = QPoint(73,73);
 
@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete img;
 }
 
 void MainWindow::initilalizePalette(){
@@ -147,9 +148,39 @@ void MainWindow::updatePanel(){
         ui->horizontalSlider_3->setMaximum(100);
         ui->horizontalSlider->setValue(hue);
         break;
-    case XYZ:
+    case CMY:
+        ui->label->setText("C");
+        ui->label_3->setText("M");
+        ui->label_2->setText("Y");
+        ui->horizontalSlider->setMaximum(255);
+        ui->horizontalSlider_2->setMaximum(255);
+        ui->horizontalSlider_3->setMaximum(255);
+        ui->horizontalSlider->setValue(255-red);
+        ui->horizontalSlider_2->setValue(255-green);
+        ui->horizontalSlider_3->setValue(255-blue);
         break;
     default:
         break;
 }
+}
+
+void MainWindow::on_lineEdit_editingFinished()
+{
+    QString html_code = ui->lineEdit->text();
+    QStringRef r(&html_code,1,2);
+    QStringRef g(&html_code,3,2);
+    QStringRef b(&html_code,5,2);
+    bool ok;
+    red = r.toUInt(&ok,16) ;
+    green  = g.toUInt(&ok,16);
+    blue = b.toUInt(&ok,16);
+    updatePanel();
+}
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    if(colMod == HSV)
+        HSVtoRGB();
+    colMod = CMY;
+    updatePanel();
 }
