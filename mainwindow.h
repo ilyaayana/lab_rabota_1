@@ -64,9 +64,12 @@ private:
     void initializePanel();
     void HSVtoRGB();
     void RGBtoHSV();
+    void RGBtoXYZ();
+    void XYZtoRGB();
     void updatePanel();
     void changePanelParams(QString CM, int max1, int max2, int max3, int val1, int val2, int val3 );
-    double F(double x);
+    double F1(double x);
+    double F2(double x);
 
 };
 #endif // MAINWINDOW_H

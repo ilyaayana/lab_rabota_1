@@ -61,24 +61,27 @@ void MainWindow::paintEvent(QPaintEvent *){
 
 void MainWindow::on_pb_ColMod1_clicked()
 {
+    if(colMod == XYZ)
+        XYZtoRGB();
+    else
+        HSVtoRGB();
     colMod = RGB;
-    HSVtoRGB();
     updatePanel();
 }
 
-void MainWindow::HSVtoRGB(){
-     QColor::fromHsv(hsv[0],hsv[1]*255/100.0,hsv[2]*255/100.0).getRgb(&rgb[0],&rgb[1],&rgb[2]);
-}
-
-void MainWindow::RGBtoHSV(){
-    QColor tmp(rgb[0],rgb[1],rgb[2]);
-    hsv[0] = tmp.hsvHue();
-    hsv[1] = tmp.hsvSaturation()*100.0/255;
-    hsv[2] = tmp.value()*100.0/255;
+void MainWindow::on_pb_ColMod2_clicked()
+{
+    if(colMod == HSV)
+        HSVtoRGB();
+    colMod = XYZ;
+    RGBtoXYZ();
+    updatePanel();
 }
 
 void MainWindow::on_pb_ColMod3_clicked()
 {
+    if(colMod == XYZ)
+        XYZtoRGB();
     colMod = HSV;
     RGBtoHSV();
     updatePanel();
@@ -109,6 +112,17 @@ void MainWindow::updatePanel(){
         break;
 }
 }
+void MainWindow::changePanelParams(QString CM, int max1, int max2, int max3, int val1, int val2, int val3 ){
+    ui->label->setText(QString(CM[0]));
+    ui->label_3->setText(QString(CM[1]));
+    ui->label_2->setText(QString(CM[2]));
+    ui->horizontalSlider->setMaximum(max1);
+    ui->horizontalSlider_2->setMaximum(max2);
+    ui->horizontalSlider_3->setMaximum(max3);
+    ui->horizontalSlider->setValue(val1);
+    ui->horizontalSlider_2->setValue(val2);
+    ui->horizontalSlider_3->setValue(val3);
+}
 
 void MainWindow::on_lineEdit_editingFinished()
 {
@@ -123,61 +137,89 @@ void MainWindow::on_lineEdit_editingFinished()
     updatePanel();
 }
 
-void MainWindow::on_pb_ColMod2_clicked()
-{
-    if(colMod == HSV)
-        HSVtoRGB();
-    colMod = XYZ;
-    double Rn = F(rgb[0]/255.0)*100;
-    double Gn = F(rgb[1]/255.0)*100;
-    double Bn = F(rgb[2]/255.0)*100;
-    xyz[0] = 0.412453*Rn+0.357580*Gn+0.180423*Bn;
-    xyz[1] = 0.212671*Rn+0.715160*Gn+0.072169*Bn;
-    xyz[2] = 0.019334*Rn+0.119193*Gn+0.950227*Bn;
-    updatePanel();
-}
-
-double MainWindow::F(double x){
-    if(x>0.04045)
-        return pow((x+0.055)/1.055,2.4);
-    return x/12.92;
-}
-
-void MainWindow::changePanelParams(QString CM, int max1, int max2, int max3, int val1, int val2, int val3 ){
-    ui->label->setText(QString(CM[0]));
-    ui->label_3->setText(QString(CM[1]));
-    ui->label_2->setText(QString(CM[2]));
-    ui->horizontalSlider->setMaximum(max1);
-    ui->horizontalSlider_2->setMaximum(max2);
-    ui->horizontalSlider_3->setMaximum(max3);
-    ui->horizontalSlider->setValue(val1);
-    ui->horizontalSlider_2->setValue(val2);
-    ui->horizontalSlider_3->setValue(val3);
-}
-
 void MainWindow::on_horizontalSlider_sliderMoved(int position)
 {
-    if(colMod == HSV)
+    switch (colMod) {
+    case HSV:
         hsv[0] = position;
-    else if(colMod == RGB)
+        break;
+    case RGB:
         rgb[0] = position;
+        break;
+    case XYZ:
+        xyz[0] = position;
+        break;
+    }
     update();
 }
 
 void MainWindow::on_horizontalSlider_2_sliderMoved(int position)
 {
-    if(colMod == HSV)
-         hsv[1] = position;
-    else if(colMod == RGB)
-         rgb[1] = position;
+    switch (colMod) {
+    case HSV:
+        hsv[1] = position;
+        break;
+    case RGB:
+        rgb[1] = position;
+        break;
+    case XYZ:
+        xyz[1] = position;
+        break;
+    }
      update();
 }
 
 void MainWindow::on_horizontalSlider_3_sliderMoved(int position)
 {
-    if(colMod == HSV)
+    switch (colMod) {
+    case HSV:
         hsv[2] = position;
-    else if(colMod == RGB)
+        break;
+    case RGB:
         rgb[2] = position;
+        break;
+    case XYZ:
+        xyz[2] = position;
+        break;
+    }
     update();
+}
+void MainWindow::RGBtoXYZ(){
+    double Rn = F1(rgb[0]/255.0)*100;
+    double Gn = F1(rgb[1]/255.0)*100;
+    double Bn = F1(rgb[2]/255.0)*100;
+    xyz[0] = 0.412453*Rn+0.357580*Gn+0.180423*Bn;
+    xyz[1] = 0.212671*Rn+0.715160*Gn+0.072169*Bn;
+    xyz[2] = 0.019334*Rn+0.119193*Gn+0.950227*Bn;
+}
+
+double MainWindow::F1(double x){
+    if(x>0.04045)
+        return pow((x+0.055)/1.055,2.4);
+    return x/12.92;
+}
+
+void MainWindow::XYZtoRGB(){
+    double x = xyz[0]/100.0, y = xyz[1]/100.0, z = xyz[2]/100.0;
+    double Rn = 3.2406 * x - 1.5372* y - 0.4986*z;
+    double Gn = -0.9689 * x + 1.8758* y + 0.0415*z;
+    double Bn = 0.0557 * x - 0.2040* y + 1.0570*z;
+    rgb[0] = F2(Rn)*255;
+    rgb[1] = F2(Gn) * 255;
+    rgb[2] = F2(Bn)*255;
+}
+double MainWindow::F2(double x){
+    if(x>=0.0031308)
+        return 1.055*pow(x,1/2.4)-0.055;
+    return 12.92*x;
+}
+void MainWindow::HSVtoRGB(){
+     QColor::fromHsv(hsv[0],hsv[1]*255/100.0,hsv[2]*255/100.0).getRgb(&rgb[0],&rgb[1],&rgb[2]);
+}
+
+void MainWindow::RGBtoHSV(){
+    QColor tmp(rgb[0],rgb[1],rgb[2]);
+    hsv[0] = tmp.hsvHue();
+    hsv[1] = tmp.hsvSaturation()*100.0/255;
+    hsv[2] = tmp.value()*100.0/255;
 }
