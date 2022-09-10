@@ -20,7 +20,7 @@ QT_END_NAMESPACE
 enum ColorModel{
     RGB,
     HSV,
-    CMY,
+    XYZ,
 };
 
 class MainWindow : public QMainWindow
@@ -32,38 +32,41 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_horizontalSlider_valueChanged(int value);
-
-    void on_horizontalSlider_2_valueChanged(int value);
-
-    void on_horizontalSlider_3_valueChanged(int value);
-
-    void on_pushButton_clicked();
-
-    void on_pushButton_3_clicked();
 
     void on_tw_pallete_cellClicked(int row, int column);
 
     void on_lineEdit_editingFinished();
 
-    void on_pushButton_2_clicked();
+    void on_pb_ColMod1_clicked();
+
+    void on_pb_ColMod2_clicked();
+
+    void on_pb_ColMod3_clicked();
+
+    void on_horizontalSlider_sliderMoved(int position);
+
+    void on_horizontalSlider_2_sliderMoved(int position);
+
+    void on_horizontalSlider_3_sliderMoved(int position);
 
 private:
     Ui::MainWindow *ui;
     ColorModel colMod;
     QImage* img;
-    double hue,saturation, val;
-    QRect rect;
+    int hsv[3];
+    int rgb[3];
+    int xyz[3];
     QPoint center;
     QPixmap circle;
-    double red,green,blue;
 
     void paintEvent(QPaintEvent*);
     void initilalizePalette();
     void initializePanel();
-    void recalcPosition();
     void HSVtoRGB();
     void RGBtoHSV();
     void updatePanel();
+    void changePanelParams(QString CM, int max1, int max2, int max3, int val1, int val2, int val3 );
+    double F(double x);
+
 };
 #endif // MAINWINDOW_H
