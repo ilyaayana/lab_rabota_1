@@ -6,9 +6,11 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    hsv[0] = 1,hsv[2] = 100;
 
-    colMod = HSV;
+    converter = new ColorConverter();
+    pb_colors.push_back(RGB);
+    pb_colors.push_back(XYZ);
+    pb_colors.push_back(HSV);;
 
     img = new QImage(150,150,QImage::Format_ARGB32);
     circle = QPixmap(":/ColorCircle.png");
@@ -16,6 +18,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     initializePanel();
     initilalizePalette();
+    ui->horizontalSlider_4->setVisible(false);
+    ui->label_5->setVisible(false);
+    ui->spinBox_4->setVisible(false);
 }
 
 MainWindow::~MainWindow()
@@ -41,72 +46,60 @@ void MainWindow::initializePanel(){
     connect(ui->horizontalSlider_2,SIGNAL(valueChanged(int)),ui->spinBox_2,SLOT(setValue(int)) );
     connect(ui->spinBox, SIGNAL(valueChanged(int)),ui->horizontalSlider_3,SLOT(setValue(int)) );
     connect(ui->horizontalSlider_3,SIGNAL(valueChanged(int)),ui->spinBox,SLOT(setValue(int)) );
+    connect(ui->spinBox_4, SIGNAL(valueChanged(int)),ui->horizontalSlider_4,SLOT(setValue(int)) );
+    connect(ui->horizontalSlider_4,SIGNAL(valueChanged(int)),ui->spinBox_4,SLOT(setValue(int)) );
 }
 
 void MainWindow::paintEvent(QPaintEvent *){
-    if(colMod == RGB)
-        RGBtoHSV();
+    QVector<int> colors = converter->getColors(HSV);
     QPalette pal = ui->label_4->palette();
-    pal.setColor(QPalette::Window, QColor::fromHsv(hsv[0]-1,hsv[1]*255.0/100,hsv[2]*255.0/100));
+    pal.setColor(QPalette::Window, QColor::fromHsv(colors[0]-1,colors[1]*255.0/100,colors[2]*255.0/100));
     ui->label_4->setPalette(pal);
     img->fill(Qt::black);
     QPainter p;
     p.begin(img);
-    p.setOpacity(hsv[2]/100.0);
+    p.setOpacity(colors[2]/100.0);
     p.drawPixmap(0,0,150,150,circle);
-    p.drawEllipse(center.x()+65*hsv[1]/100.0*qCos(hsv[0]*3.14/180),center.y()-65*hsv[1]/100.0*qSin(hsv[0]*3.14/180.0),10,10);
+    p.drawEllipse(center.x()+65*colors[1]/100.0*qCos(colors[0]*3.14/180),center.y()-65*colors[1]/100.0*qSin(colors[0]*3.14/180.0),10,10);
     p.end();
     ui->lb_colCircle->setPixmap(QPixmap::fromImage(*img));
 }
 
 void MainWindow::on_pb_ColMod1_clicked()
 {
-    if(colMod == XYZ)
-        XYZtoRGB();
-    else
-        HSVtoRGB();
-    colMod = RGB;
+    converter->setColMode(pb_colors[0]);
     updatePanel();
 }
 
 void MainWindow::on_pb_ColMod2_clicked()
 {
-    if(colMod == HSV)
-        HSVtoRGB();
-    colMod = XYZ;
-    RGBtoXYZ();
+    converter->setColMode(pb_colors[1]);
     updatePanel();
 }
 
 void MainWindow::on_pb_ColMod3_clicked()
 {
-    if(colMod == XYZ)
-        XYZtoRGB();
-    colMod = HSV;
-    RGBtoHSV();
+    converter->setColMode(pb_colors[2]);
     updatePanel();
 }
 
 void MainWindow::on_tw_pallete_cellClicked(int row, int column)
 {
-    hsv[0] = 24*column;
-    hsv[1] = 100;
-    hsv[2] = 100 - 20*row;
-    if(colMod == RGB)
-        HSVtoRGB();
+    converter->updateColors(24*column,100,100-20*row,0,HSV);
     updatePanel();
 }
 
 void MainWindow::updatePanel(){
-    switch(colMod){
+    QVector<int> colors = converter->getColors(converter->getColMode());
+    switch(converter->getColMode()){
     case RGB:
-        changePanelParams("RGB",255,255,255,rgb[0],rgb[1],rgb[2]);
+        changePanelParams("RGB",255,255,255,colors[0],colors[1],colors[2]);
         break;
     case HSV:
-        changePanelParams("HSV",360,100,100,hsv[0],hsv[1],hsv[2]);
+        changePanelParams("HSV",360,100,100,colors[0],colors[1],colors[2]);
         break;
     case XYZ:
-        changePanelParams("XYZ",100,100,100,xyz[0],xyz[1],xyz[2]);
+        changePanelParams("XYZ",100,100,100,colors[0],colors[1],colors[2]);
         break;
     default:
         break;
@@ -131,95 +124,37 @@ void MainWindow::on_lineEdit_editingFinished()
     QStringRef g(&html_code,3,2);
     QStringRef b(&html_code,5,2);
     bool ok;
-    rgb[0] = r.toUInt(&ok,16) ;
-    rgb[1]  = g.toUInt(&ok,16);
-    rgb[2] = b.toUInt(&ok,16);
+    converter->updateColors(r.toUInt(&ok,16),g.toUInt(&ok,16),b.toUInt(&ok,16),0,RGB);
     updatePanel();
 }
 
 void MainWindow::on_horizontalSlider_sliderMoved(int position)
 {
-    switch (colMod) {
-    case HSV:
-        hsv[0] = position;
-        break;
-    case RGB:
-        rgb[0] = position;
-        break;
-    case XYZ:
-        xyz[0] = position;
-        break;
-    }
+    converter->updateColors(ui->horizontalSlider->value(),ui->horizontalSlider_2->value(),ui->horizontalSlider_3->value());
     update();
 }
 
 void MainWindow::on_horizontalSlider_2_sliderMoved(int position)
 {
-    switch (colMod) {
-    case HSV:
-        hsv[1] = position;
-        break;
-    case RGB:
-        rgb[1] = position;
-        break;
-    case XYZ:
-        xyz[1] = position;
-        break;
-    }
+    converter->updateColors(ui->horizontalSlider->value(),ui->horizontalSlider_2->value(),ui->horizontalSlider_3->value());
      update();
 }
 
 void MainWindow::on_horizontalSlider_3_sliderMoved(int position)
 {
-    switch (colMod) {
-    case HSV:
-        hsv[2] = position;
-        break;
-    case RGB:
-        rgb[2] = position;
-        break;
-    case XYZ:
-        xyz[2] = position;
-        break;
-    }
+    converter->updateColors(ui->horizontalSlider->value(),ui->horizontalSlider_2->value(),ui->horizontalSlider_3->value());
     update();
 }
-void MainWindow::RGBtoXYZ(){
-    double Rn = F1(rgb[0]/255.0)*100;
-    double Gn = F1(rgb[1]/255.0)*100;
-    double Bn = F1(rgb[2]/255.0)*100;
-    xyz[0] = 0.412453*Rn+0.357580*Gn+0.180423*Bn;
-    xyz[1] = 0.212671*Rn+0.715160*Gn+0.072169*Bn;
-    xyz[2] = 0.019334*Rn+0.119193*Gn+0.950227*Bn;
-}
 
-double MainWindow::F1(double x){
-    if(x>0.04045)
-        return pow((x+0.055)/1.055,2.4);
-    return x/12.92;
+void MainWindow::on_action2_triggered()
+{
+    pb_colors[0] = RGB;
+    pb_colors[1] = CMYK;
+    pb_colors[2] = HSL;
 }
-
-void MainWindow::XYZtoRGB(){
-    double x = xyz[0]/100.0, y = xyz[1]/100.0, z = xyz[2]/100.0;
-    double Rn = 3.2406 * x - 1.5372* y - 0.4986*z;
-    double Gn = -0.9689 * x + 1.8758* y + 0.0415*z;
-    double Bn = 0.0557 * x - 0.2040* y + 1.0570*z;
-    rgb[0] = F2(Rn)*255;
-    rgb[1] = F2(Gn) * 255;
-    rgb[2] = F2(Bn)*255;
-}
-double MainWindow::F2(double x){
-    if(x>=0.0031308)
-        return 1.055*pow(x,1/2.4)-0.055;
-    return 12.92*x;
-}
-void MainWindow::HSVtoRGB(){
-     QColor::fromHsv(hsv[0],hsv[1]*255/100.0,hsv[2]*255/100.0).getRgb(&rgb[0],&rgb[1],&rgb[2]);
-}
-
-void MainWindow::RGBtoHSV(){
-    QColor tmp(rgb[0],rgb[1],rgb[2]);
-    hsv[0] = tmp.hsvHue();
-    hsv[1] = tmp.hsvSaturation()*100.0/255;
-    hsv[2] = tmp.value()*100.0/255;
+void MainWindow::on_action3_triggered()
+{
+    pb_colors[0] = RGB;
+    pb_colors[1] = XYZ;
+    pb_colors[2] = LAB;
 }

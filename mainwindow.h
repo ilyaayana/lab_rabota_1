@@ -11,17 +11,12 @@
 #include <QPainter>
 #include <QDebug>
 #include <QSet>
+#include "colorconverter.h"
 
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
-
-enum ColorModel{
-    RGB,
-    HSV,
-    XYZ,
-};
 
 class MainWindow : public QMainWindow
 {
@@ -38,38 +33,30 @@ private slots:
     void on_lineEdit_editingFinished();
 
     void on_pb_ColMod1_clicked();
-
     void on_pb_ColMod2_clicked();
-
     void on_pb_ColMod3_clicked();
 
     void on_horizontalSlider_sliderMoved(int position);
-
     void on_horizontalSlider_2_sliderMoved(int position);
-
     void on_horizontalSlider_3_sliderMoved(int position);
+
+    void on_action2_triggered();
+    void on_action3_triggered();
 
 private:
     Ui::MainWindow *ui;
     ColorModel colMod;
     QImage* img;
-    int hsv[3];
-    int rgb[3];
-    int xyz[3];
     QPoint center;
     QPixmap circle;
+    ColorConverter* converter;
+    QVector<ColorModel> pb_colors;
 
     void paintEvent(QPaintEvent*);
     void initilalizePalette();
-    void initializePanel();
-    void HSVtoRGB();
-    void RGBtoHSV();
-    void RGBtoXYZ();
-    void XYZtoRGB();
+    void initializePanel();    
     void updatePanel();
     void changePanelParams(QString CM, int max1, int max2, int max3, int val1, int val2, int val3 );
-    double F1(double x);
-    double F2(double x);
 
 };
 #endif // MAINWINDOW_H
