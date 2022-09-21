@@ -18,9 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     initializePanel();
     initilalizePalette();
-    ui->horizontalSlider_4->setVisible(false);
-    ui->label_5->setVisible(false);
-    ui->spinBox_4->setVisible(false);
+    deg = 0;
 }
 
 MainWindow::~MainWindow()
@@ -48,6 +46,9 @@ void MainWindow::initializePanel(){
     connect(ui->horizontalSlider_3,SIGNAL(valueChanged(int)),ui->spinBox,SLOT(setValue(int)) );
     connect(ui->spinBox_4, SIGNAL(valueChanged(int)),ui->horizontalSlider_4,SLOT(setValue(int)) );
     connect(ui->horizontalSlider_4,SIGNAL(valueChanged(int)),ui->spinBox_4,SLOT(setValue(int)) );
+    ui->horizontalSlider_4->setVisible(false);
+    ui->label_5->setVisible(false);
+    ui->spinBox_4->setVisible(false);
 }
 
 void MainWindow::paintEvent(QPaintEvent *){
@@ -91,6 +92,19 @@ void MainWindow::on_tw_pallete_cellClicked(int row, int column)
 
 void MainWindow::updatePanel(){
     QVector<int> colors = converter->getColors(converter->getColMode());
+
+    if(converter->getColMode()!= LAB){
+        ui->horizontalSlider_2->setMinimum(0);
+        ui->horizontalSlider_3->setMinimum(0);
+        ui->spinBox_2->setMinimum(0);
+        ui->spinBox->setMinimum(0);
+    }
+    if(converter->getColMode()!= CMYK){
+        ui->horizontalSlider_4->setVisible(false);
+        ui->label_5->setVisible(false);
+        ui->spinBox_4->setVisible(false);
+    }
+
     switch(converter->getColMode()){
     case RGB:
         changePanelParams("RGB",255,255,255,colors[0],colors[1],colors[2]);
@@ -100,6 +114,22 @@ void MainWindow::updatePanel(){
         break;
     case XYZ:
         changePanelParams("XYZ",100,100,100,colors[0],colors[1],colors[2]);
+        break;
+    case LAB:
+        ui->horizontalSlider_2->setMinimum(-128);
+        ui->horizontalSlider_3->setMinimum(-128);
+        ui->spinBox_2->setMinimum(-128);
+        ui->spinBox->setMinimum(-128);
+        changePanelParams("Lab",100,128,128,colors[0],colors[1],colors[2]);
+        break;
+    case CMYK:
+        ui->horizontalSlider_4->setVisible(true);
+        ui->label_5->setVisible(true);
+        ui->spinBox_4->setVisible(true);
+        ui->horizontalSlider_4->setValue(colors[3]);
+        break;
+    case HSL:
+        changePanelParams("HSL",360,100,100,colors[0],colors[1],colors[2]);
         break;
     default:
         break;
@@ -128,33 +158,68 @@ void MainWindow::on_lineEdit_editingFinished()
     updatePanel();
 }
 
-void MainWindow::on_horizontalSlider_sliderMoved(int position)
-{
-    converter->updateColors(ui->horizontalSlider->value(),ui->horizontalSlider_2->value(),ui->horizontalSlider_3->value());
-    update();
-}
-
-void MainWindow::on_horizontalSlider_2_sliderMoved(int position)
-{
-    converter->updateColors(ui->horizontalSlider->value(),ui->horizontalSlider_2->value(),ui->horizontalSlider_3->value());
-     update();
-}
-
-void MainWindow::on_horizontalSlider_3_sliderMoved(int position)
-{
-    converter->updateColors(ui->horizontalSlider->value(),ui->horizontalSlider_2->value(),ui->horizontalSlider_3->value());
-    update();
-}
-
 void MainWindow::on_action2_triggered()
 {
     pb_colors[0] = RGB;
     pb_colors[1] = CMYK;
     pb_colors[2] = HSL;
+    ui->pb_ColMod1->setText("RGB");
+    ui->pb_ColMod2->setText("CMYK");
+    ui->pb_ColMod3->setText("HSL");
+    converter->setColMode(pb_colors[0]);
+    updatePanel();
 }
 void MainWindow::on_action3_triggered()
 {
     pb_colors[0] = RGB;
     pb_colors[1] = XYZ;
     pb_colors[2] = LAB;
+    ui->pb_ColMod1->setText("RGB");
+    ui->pb_ColMod2->setText("XYZ");
+    ui->pb_ColMod3->setText("LAB");
+    converter->setColMode(pb_colors[0]);
+    updatePanel();
+}
+void MainWindow::on_action4_triggered()
+{
+    pb_colors[0] = RGB;
+    pb_colors[1] = HSV;
+    pb_colors[2] = LAB;
+    ui->pb_ColMod1->setText("RGB");
+    ui->pb_ColMod2->setText("HSV");
+    ui->pb_ColMod3->setText("LAB");
+    converter->setColMode(pb_colors[0]);
+    updatePanel();
+}
+
+void MainWindow::on_horizontalSlider_valueChanged(int value)
+{
+    converter->updateColors(ui->horizontalSlider->value(),ui->horizontalSlider_2->value(),ui->horizontalSlider_3->value());
+}
+
+void MainWindow::on_horizontalSlider_2_valueChanged(int value)
+{
+    converter->updateColors(ui->horizontalSlider->value(),ui->horizontalSlider_2->value(),ui->horizontalSlider_3->value());
+}
+
+void MainWindow::on_horizontalSlider_3_valueChanged(int value)
+{
+    converter->updateColors(ui->horizontalSlider->value(),ui->horizontalSlider_2->value(),ui->horizontalSlider_3->value());
+}
+
+void MainWindow::on_horizontalSlider_4_valueChanged(int value)
+{
+    converter->updateColors(ui->horizontalSlider->value(),ui->horizontalSlider_2->value(),ui->horizontalSlider_3->value(),ui->horizontalSlider_4->value());
+}
+
+void MainWindow::on_action6_triggered()
+{
+    pb_colors[0] = CMYK;
+    pb_colors[1] = RGB;
+    pb_colors[2] = HSL;
+    ui->pb_ColMod1->setText("CMYK");
+    ui->pb_ColMod2->setText("RGB");
+    ui->pb_ColMod3->setText("HSL");
+    converter->setColMode(pb_colors[0]);
+    updatePanel();
 }

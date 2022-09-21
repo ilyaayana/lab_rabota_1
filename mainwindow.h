@@ -36,12 +36,20 @@ private slots:
     void on_pb_ColMod2_clicked();
     void on_pb_ColMod3_clicked();
 
-    void on_horizontalSlider_sliderMoved(int position);
-    void on_horizontalSlider_2_sliderMoved(int position);
-    void on_horizontalSlider_3_sliderMoved(int position);
-
     void on_action2_triggered();
     void on_action3_triggered();
+
+    void on_horizontalSlider_valueChanged(int value);
+
+    void on_horizontalSlider_2_valueChanged(int value);
+
+    void on_horizontalSlider_3_valueChanged(int value);
+
+    void on_horizontalSlider_4_valueChanged(int value);
+
+    void on_action4_triggered();
+
+    void on_action6_triggered();
 
 private:
     Ui::MainWindow *ui;
@@ -51,7 +59,7 @@ private:
     QPixmap circle;
     ColorConverter* converter;
     QVector<ColorModel> pb_colors;
-
+    int deg;
     void paintEvent(QPaintEvent*);
     void initilalizePalette();
     void initializePanel();    

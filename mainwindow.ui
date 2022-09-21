@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>533</width>
-    <height>369</height>
+    <height>396</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -125,6 +125,9 @@
             </item>
             <item>
              <widget class="QSlider" name="horizontalSlider_2">
+              <property name="minimum">
+               <number>0</number>
+              </property>
               <property name="maximum">
                <number>100</number>
               </property>

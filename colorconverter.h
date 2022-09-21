@@ -4,6 +4,7 @@
 #include <QPainter>
 #include <QDebug>
 #include <QVector>
+#include <QtMath>
 
 enum ColorModel{
     None,
@@ -29,17 +30,19 @@ private:
     int hsv[3];
     int rgb[3];
     int xyz[3];
-
+    int deg;
     void initilalizePalette();
     void initializePanel();
     void HSVtoRGB();
     void RGBtoHSV();
     void RGBtoXYZ();
+    QVector<int> RGBtoCMYK();
+    void CMYKtoRGB(int,int,int,int);
     void XYZtoRGB();
-    void XYZtoLAB();
-    void LABtoXYZ();
-    void HSVtoHSL();
-    void HSLtoHSV();
+    QVector<int> XYZtoLAB();
+    void LABtoXYZ(double,double,double);
+    QVector<int> HSVtoHSL();
+    void HSLtoHSV(double,double,double);
     double F1(double x);
     double F2(double x);
     double F3(double x);

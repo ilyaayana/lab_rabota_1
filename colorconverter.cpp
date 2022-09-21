@@ -3,6 +3,7 @@
 ColorConverter::ColorConverter()
 {
     colMod = HSV;
+    deg = 0;
 }
 
 void ColorConverter::setColMode(ColorModel colorMod){
@@ -13,7 +14,9 @@ ColorModel ColorConverter::getColMode(){
 }
 
 void ColorConverter::updateColors(int val1, int val2, int val3, int val4, ColorModel clMode){
-    switch(colMod){
+    if(clMode == None)
+        clMode = colMod;
+    switch(clMode){
         case RGB:
         rgb[0] = val1;
         rgb[1] = val2;
@@ -34,8 +37,21 @@ void ColorConverter::updateColors(int val1, int val2, int val3, int val4, ColorM
         xyz[2] = val3;
         XYZtoRGB();
         RGBtoHSV();
+        break;
+    case CMYK:
+        CMYKtoRGB(val1,val2,val3,val4);
+        RGBtoHSV();
+        RGBtoXYZ();
+        break;
+    case LAB:
+        LABtoXYZ(val1,val2,val3);
+        XYZtoRGB();
+        RGBtoHSV();
+        break;
     case HSL:
-        //HStoHSV();
+        HSLtoHSV(val1,val2,val3);
+        HSVtoRGB();
+        RGBtoXYZ();
         break;
     }
 }
@@ -56,6 +72,15 @@ QVector<int> ColorConverter::getColors(ColorModel clMode){
         colors[0] = xyz[0];
         colors[1] = xyz[1];
         colors[2] = xyz[2];
+        break;
+    case LAB:
+        colors =  XYZtoLAB();
+        break;
+    case CMYK:
+        colors =  RGBtoCMYK();
+        break;
+    case HSL:
+        colors = HSVtoHSL();
         break;
  }
     return colors;
@@ -84,6 +109,12 @@ void ColorConverter::XYZtoRGB(){
     rgb[0] = F2(Rn)*255;
     rgb[1] = F2(Gn) * 255;
     rgb[2] = F2(Bn)*255;
+    for(int i = 0; i < 3;i++){
+        if(rgb[i] < 0)
+            rgb[i] = 0;
+        if(rgb[i]>255)
+            rgb[i] = 255;
+    }
 }
 double ColorConverter::F2(double x)
 {
@@ -102,20 +133,44 @@ void ColorConverter::RGBtoHSV()
     hsv[0] = tmp.hsvHue();
     hsv[1] = tmp.hsvSaturation()*100.0/255;
     hsv[2] = tmp.value()*100.0/255;
+   // qDebug() << rgb[0] << " " << rgb[1] << " " << rgb[2];
 }
-void ColorConverter::XYZtoLAB(){
+
+QVector<int> ColorConverter::RGBtoCMYK(){
+    QVector<int> cmyk(4);
+    double k;
+    if(1-rgb[0]/255.0 < 1-rgb[1]/255.0 && 1-rgb[0]/255.0 < 1-rgb[2]/255.0 )
+        k = 1-rgb[0]/255.0;
+    else if(1-rgb[1]/255.0 < 1-rgb[2]/255.0)
+        k = 1-rgb[1]/255.0;
+    else
+        k = 1-rgb[2]/255.0;
+    cmyk[0] = (1-rgb[0]/255.0-k)*100/(1-k);
+    cmyk[1] = (1-rgb[1]/255.0-k)*100/(1-k);
+    cmyk[2] = (1-rgb[2]/255.0-k)*100/(1-k);
+    cmyk[3] = (k*100);
+    return cmyk;
+}
+void ColorConverter::CMYKtoRGB(int c,int m,int y,int k){
+    rgb[0] = 255*(1-c/100.0)*(1-k/100.0);
+    rgb[1] = 255*(1-m/100.0)*(1-k/100.0);
+    rgb[2] = 255*(1-y/100.0)*(1-k/100.0);
+}
+
+QVector<int> ColorConverter::XYZtoLAB(){
     double Xw = 95.047, Yw = 100, Zw = 108.883;
-    double L = 116*F3(xyz[1]/Yw)-16;
-    double a = 500*F3(xyz[0]/Xw)-F3(xyz[1]/Yw);
-    double b = 200*F3(xyz[1]/Yw)-F3(xyz[2]/Zw);
+    QVector<int> Lab(4);
+    Lab[0] = (116*F3(xyz[1]/Yw)-16);
+    Lab[1] = (500*(F3(xyz[0]/Xw)-F3(xyz[1]/Yw)));
+    Lab[2] = (200*(F3(xyz[1]/Yw)-F3(xyz[2]/Zw)));
+    return Lab;
 }
 double ColorConverter::F3(double x){
     if(x>=0.008856)
         return pow(x,1.0/3);
     return 7.787*x+16.0/116;
 }
-void ColorConverter::LABtoXYZ(){
-    double L,a,b;
+void ColorConverter::LABtoXYZ(double L, double a, double b){
     double Xw = 95.047, Yw = 100, Zw = 108.883;
     xyz[1] = F4((L+16)/116)+Xw;
     xyz[0] = F4(a/500+(L+16)/116)*Yw;
@@ -126,16 +181,26 @@ double ColorConverter::F4(double x){
         return pow(x,3);
     return (x-16.0/116)/7.787;
 }
-void ColorConverter::HSVtoHSL(){
+QVector<int> ColorConverter::HSVtoHSL(){
+    QVector<int> hsl(4);
     double Sv = hsv[1]/100.0, v =hsv[2]/100.0;
-    int Hl = hsv[0];
-    double L = v*(1-Sv/2);
-    double Sl;
-    if(L == 0 || L ==1)
-        Sl = 0;
+    hsl[0] = hsv[0];
+    hsl[2] = v*(1-Sv/2)*100;
+    double L = hsl[2]/100.0;
+    if(hsl[2] == 0 || hsl[2] ==1)
+        hsl[1] = 0;
     else
-        Sl = (v-L)/(L<1-L ? L: 1-L);
+        hsl[1] = (v-L)*100/(L<1-L ? L: 1-L);
+    return hsl;
 }
-void ColorConverter::HSLtoHSV(){
-    //hsv[0] = HSL;
+void ColorConverter::HSLtoHSV(double h, double s, double l){
+    hsv[0] = h;
+    s /= 100;
+    l /=100;
+    int v  = l+s*qMin(l,1-l);
+    hsv[2] = v*100;
+    if(v==0)
+        hsv[1] = 0;
+    else
+        hsv[1] = 2*(1-l/v);
 }
