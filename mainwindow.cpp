@@ -18,7 +18,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     initializePanel();
     initilalizePalette();
-    deg = 0;
 }
 
 MainWindow::~MainWindow()
@@ -127,6 +126,7 @@ void MainWindow::updatePanel(){
         ui->label_5->setVisible(true);
         ui->spinBox_4->setVisible(true);
         ui->horizontalSlider_4->setValue(colors[3]);
+        changePanelParams("CMY",100,100,100,colors[0],colors[1],colors[2]);
         break;
     case HSL:
         changePanelParams("HSL",360,100,100,colors[0],colors[1],colors[2]);

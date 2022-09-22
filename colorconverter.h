@@ -30,9 +30,7 @@ private:
     int hsv[3];
     int rgb[3];
     int xyz[3];
-    int deg;
-    void initilalizePalette();
-    void initializePanel();
+    void sincColors(ColorModel mode);
     void HSVtoRGB();
     void RGBtoHSV();
     void RGBtoXYZ();
