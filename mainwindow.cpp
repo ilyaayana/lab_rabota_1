@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
     converter = new ColorConverter();
     pb_colors.push_back(RGB);
     pb_colors.push_back(XYZ);
-    pb_colors.push_back(HSV);;
+    pb_colors.push_back(HSV);
 
     img = new QImage(150,150,QImage::Format_ARGB32);
     circle = QPixmap(":/ColorCircle.png");
