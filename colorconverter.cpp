@@ -103,11 +103,18 @@ void ColorConverter::XYZtoRGB(){
     rgb[2] = qRound(F2(Bn)*255);
     for(int i = 0; i < 3;i++){
         if(rgb[i] < 0)
+        {
             rgb[i] = 0;
+            emit XYZ_outOfBounds();
+        }
         if(rgb[i]>255)
+        {
             rgb[i] = 255;
+            emit XYZ_outOfBounds();
+        }
     }
 }
+
 double ColorConverter::F2(double x)
 {
     if(x>=0.0031308)

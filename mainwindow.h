@@ -32,6 +32,7 @@ private slots:
     void on_lineEdit_editingFinished();
 
     void setVar();
+    void setMessage();
 
     void on_pb_ColMod1_clicked();
     void on_pb_ColMod2_clicked();

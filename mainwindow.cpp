@@ -19,6 +19,8 @@ MainWindow::MainWindow(QWidget *parent)
     initializePanel();
     initilalizePalette();
     initializeActions();
+    connect(converter, SIGNAL(XYZ_outOfBounds()),this,SLOT(setMessage()));
+
 }
 
 MainWindow::~MainWindow()
@@ -369,4 +371,7 @@ void MainWindow::setVar(){
     }
     converter->setColMode(pb_colors[0]);
     updatePanel();
+}
+void MainWindow::setMessage(){
+    ui->statusbar->showMessage(tr("Произошел выход за пределы."),2000);
 }

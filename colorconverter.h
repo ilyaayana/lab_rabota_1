@@ -2,6 +2,7 @@
 #define COLORCONVERTER_H
 #include <QtMath>
 #include <QPainter>
+#include <QMainWindow>
 #include <QDebug>
 #include <QVector>
 #include <QtMath>
@@ -16,14 +17,18 @@ enum ColorModel{
     CMYK
 };
 
-class ColorConverter
+class ColorConverter:public QMainWindow
 {
+    Q_OBJECT
+
 public:
     ColorConverter();
     void setColMode(ColorModel colorMod);
     ColorModel getColMode();
     void updateColors(int val1, int val2, int val3, int val4 = 0, ColorModel clMode = None);
     QVector<int> getColors(ColorModel clMode);
+signals:
+    void XYZ_outOfBounds();
 
 private:
     ColorModel colMod;
