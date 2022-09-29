@@ -31,6 +31,8 @@ private slots:
 
     void on_lineEdit_editingFinished();
 
+    void setVar();
+
     void on_pb_ColMod1_clicked();
     void on_pb_ColMod2_clicked();
     void on_pb_ColMod3_clicked();
@@ -41,10 +43,6 @@ private slots:
     void on_horizontalSlider_3_valueChanged(int value);
     void on_horizontalSlider_4_valueChanged(int value);
 
-    void on_action2_triggered();
-    void on_action3_triggered();
-    void on_action4_triggered();
-    void on_action6_triggered();
 
 private:
     Ui::MainWindow *ui;
@@ -56,7 +54,9 @@ private:
     QVector<ColorModel> pb_colors;
     void paintEvent(QPaintEvent*);
     void initilalizePalette();
-    void initializePanel();    
+    void initializePanel();
+    void initializeActions();
+    void initializeVars();
     void updatePanel();
     void changePanelParams(QString CM, int max1, int max2, int max3, int val1, int val2, int val3 );
 

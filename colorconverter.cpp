@@ -130,7 +130,7 @@ void ColorConverter::RGBtoHSV()
 QVector<int> ColorConverter::RGBtoCMYK(){
     QVector<int> cmyk(4);
     double k;
-    if(1-rgb[0]/255.0 < 1-rgb[1]/255.0 && 1-rgb[0]/255.0 < 1-rgb[2]/255.0 )
+    if((1-rgb[0]/255.0 < 1-rgb[1]/255.0) && (1-rgb[0]/255.0 < 1-rgb[2]/255.0))
         k = 1-rgb[0]/255.0;
     else if(1-rgb[1]/255.0 < 1-rgb[2]/255.0)
         k = 1-rgb[1]/255.0;

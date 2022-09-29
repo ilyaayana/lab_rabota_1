@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     initializePanel();
     initilalizePalette();
+    initializeActions();
 }
 
 MainWindow::~MainWindow()
@@ -48,6 +49,45 @@ void MainWindow::initializePanel(){
     ui->horizontalSlider_4->setVisible(false);
     ui->label_5->setVisible(false);
     ui->spinBox_4->setVisible(false);
+}
+
+void MainWindow::initializeActions(){
+    ui->action1_2->setData(1);
+    ui->action2_2->setData(2);
+    ui->action3_2->setData(3);
+    ui->action4_2->setData(4);
+    ui->action5_2->setData(5);
+    ui->action6_2->setData(6);
+    ui->action7_2->setData(7);
+    ui->action8_2->setData(8);
+    ui->action9_2->setData(9);
+    ui->action10_2->setData(10);
+    ui->action11_2->setData(11);
+    ui->action12_2->setData(12);
+    ui->action13_2->setData(13);
+    ui->action14_2->setData(14);
+    ui->action15_2->setData(15);
+    ui->action16->setData(16);
+    ui->action17->setData(17);
+    ui->action18->setData(18);
+    connect(ui->action1_2,SIGNAL(triggered()),SLOT(setVar()));
+    connect(ui->action2_2,SIGNAL(triggered()),SLOT(setVar()));
+    connect(ui->action3_2,SIGNAL(triggered()),SLOT(setVar()));
+    connect(ui->action4_2,SIGNAL(triggered()),SLOT(setVar()));
+    connect(ui->action5_2,SIGNAL(triggered()),SLOT(setVar()));
+    connect(ui->action6_2,SIGNAL(triggered()),SLOT(setVar()));
+    connect(ui->action7_2,SIGNAL(triggered()),SLOT(setVar()));
+    connect(ui->action8_2,SIGNAL(triggered()),SLOT(setVar()));
+    connect(ui->action9_2,SIGNAL(triggered()),SLOT(setVar()));
+    connect(ui->action10_2,SIGNAL(triggered()),SLOT(setVar()));
+    connect(ui->action11_2,SIGNAL(triggered()),SLOT(setVar()));
+    connect(ui->action12_2,SIGNAL(triggered()),SLOT(setVar()));
+    connect(ui->action13_2,SIGNAL(triggered()),SLOT(setVar()));
+    connect(ui->action14_2,SIGNAL(triggered()),SLOT(setVar()));
+    connect(ui->action15_2,SIGNAL(triggered()),SLOT(setVar()));
+    connect(ui->action16,SIGNAL(triggered()),SLOT(setVar()));
+    connect(ui->action17,SIGNAL(triggered()),SLOT(setVar()));
+    connect(ui->action18,SIGNAL(triggered()),SLOT(setVar()));
 }
 
 void MainWindow::paintEvent(QPaintEvent *){
@@ -158,53 +198,19 @@ void MainWindow::on_lineEdit_editingFinished()
     updatePanel();
 }
 
-void MainWindow::on_action2_triggered()
-{
-    pb_colors[0] = RGB;
-    pb_colors[1] = CMYK;
-    pb_colors[2] = HSL;
-    ui->pb_ColMod1->setText("RGB");
-    ui->pb_ColMod2->setText("CMYK");
-    ui->pb_ColMod3->setText("HSL");
-    converter->setColMode(pb_colors[0]);
-    updatePanel();
-}
-void MainWindow::on_action3_triggered()
-{
-    pb_colors[0] = RGB;
-    pb_colors[1] = XYZ;
-    pb_colors[2] = LAB;
-    ui->pb_ColMod1->setText("RGB");
-    ui->pb_ColMod2->setText("XYZ");
-    ui->pb_ColMod3->setText("LAB");
-    converter->setColMode(pb_colors[0]);
-    updatePanel();
-}
-void MainWindow::on_action4_triggered()
-{
-    pb_colors[0] = RGB;
-    pb_colors[1] = HSV;
-    pb_colors[2] = LAB;
-    ui->pb_ColMod1->setText("RGB");
-    ui->pb_ColMod2->setText("HSV");
-    ui->pb_ColMod3->setText("LAB");
-    converter->setColMode(pb_colors[0]);
-    updatePanel();
-}
-
 void MainWindow::on_horizontalSlider_valueChanged(int value)
 {
-    converter->updateColors(ui->horizontalSlider->value(),ui->horizontalSlider_2->value(),ui->horizontalSlider_3->value());
+    converter->updateColors(ui->horizontalSlider->value(),ui->horizontalSlider_2->value(),ui->horizontalSlider_3->value(),ui->horizontalSlider_4->value());
 }
 
 void MainWindow::on_horizontalSlider_2_valueChanged(int value)
 {
-    converter->updateColors(ui->horizontalSlider->value(),ui->horizontalSlider_2->value(),ui->horizontalSlider_3->value());
+    converter->updateColors(ui->horizontalSlider->value(),ui->horizontalSlider_2->value(),ui->horizontalSlider_3->value(),ui->horizontalSlider_4->value());
 }
 
 void MainWindow::on_horizontalSlider_3_valueChanged(int value)
 {
-    converter->updateColors(ui->horizontalSlider->value(),ui->horizontalSlider_2->value(),ui->horizontalSlider_3->value());
+    converter->updateColors(ui->horizontalSlider->value(),ui->horizontalSlider_2->value(),ui->horizontalSlider_3->value(),ui->horizontalSlider_4->value());
 }
 
 void MainWindow::on_horizontalSlider_4_valueChanged(int value)
@@ -212,14 +218,155 @@ void MainWindow::on_horizontalSlider_4_valueChanged(int value)
     converter->updateColors(ui->horizontalSlider->value(),ui->horizontalSlider_2->value(),ui->horizontalSlider_3->value(),ui->horizontalSlider_4->value());
 }
 
-void MainWindow::on_action6_triggered()
-{
+void MainWindow::setVar(){
+    QAction* action = qobject_cast<QAction*>(sender());
+    int var = action->data().toInt();
+    switch(var){
+        case 1:
+        pb_colors[0] = RGB;
+        pb_colors[1] = LAB;
+        pb_colors[2] = CMYK;
+        ui->pb_ColMod1->setText("RGB");
+        ui->pb_ColMod2->setText("LAB");
+        ui->pb_ColMod3->setText("CMYK");
+        break;
+        case 2:
+        pb_colors[0] = RGB;
+        pb_colors[1] = CMYK;
+        pb_colors[2] = HSL;
+        ui->pb_ColMod1->setText("RGB");
+        ui->pb_ColMod2->setText("CMYK");
+        ui->pb_ColMod3->setText("HSL");
+        break;
+        case 3:
+        pb_colors[0] = RGB;
+        pb_colors[1] = XYZ;
+        pb_colors[2] = LAB;
+        ui->pb_ColMod1->setText("RGB");
+        ui->pb_ColMod2->setText("XYZ");
+        ui->pb_ColMod3->setText("LAB");
+        break;
+    case 4:
+    pb_colors[0] = RGB;
+    pb_colors[1] = HSV;
+    pb_colors[2] = LAB;
+    ui->pb_ColMod1->setText("RGB");
+    ui->pb_ColMod2->setText("HSV");
+    ui->pb_ColMod3->setText("LAB");
+    break;
+    case 5:
+    pb_colors[0] = CMYK;
+    pb_colors[1] = LAB;
+    pb_colors[2] = HSV;
+    ui->pb_ColMod1->setText("CMYK");
+    ui->pb_ColMod2->setText("LAB");
+    ui->pb_ColMod3->setText("HSV");
+    break;
+    case 6:
     pb_colors[0] = CMYK;
     pb_colors[1] = RGB;
-    pb_colors[2] = HSL;
+    pb_colors[2] = HSV;
     ui->pb_ColMod1->setText("CMYK");
     ui->pb_ColMod2->setText("RGB");
+    ui->pb_ColMod3->setText("HSV");
+    break;
+    case 7:
+    pb_colors[0] = CMYK;
+    pb_colors[1] = RGB;
+    pb_colors[2] = HSV;
+    ui->pb_ColMod1->setText("CMYK");
+    ui->pb_ColMod2->setText("RGB");
+    ui->pb_ColMod3->setText("HSV");
+    break;
+    case 8:
+    pb_colors[0] = RGB;
+    pb_colors[1] = XYZ;
+    pb_colors[2] = HSV;
+    ui->pb_ColMod1->setText("RGB");
+    ui->pb_ColMod2->setText("XYZ");
+    ui->pb_ColMod3->setText("HSV");
+    break;
+    case 9:
+    pb_colors[0] = HSV;
+    pb_colors[1] = XYZ;
+    pb_colors[2] = LAB;
+    ui->pb_ColMod1->setText("HSV");
+    ui->pb_ColMod2->setText("XYZ");
+    ui->pb_ColMod3->setText("LAB");
+    break;
+    case 10:
+    pb_colors[0] = CMYK;
+    pb_colors[1] = LAB;
+    pb_colors[2] = RGB;
+    ui->pb_ColMod1->setText("CMYK");
+    ui->pb_ColMod2->setText("LAB");
+    ui->pb_ColMod3->setText("RGB");
+    break;
+    case 11:
+    pb_colors[0] = XYZ;
+    pb_colors[1] = LAB;
+    pb_colors[2] = HSL;
+    ui->pb_ColMod1->setText("XYZ");
+    ui->pb_ColMod2->setText("LAB");
     ui->pb_ColMod3->setText("HSL");
+    break;
+    case 12:
+    pb_colors[0] = RGB;
+    pb_colors[1] = XYZ;
+    pb_colors[2] = HSL;
+    ui->pb_ColMod1->setText("RGB");
+    ui->pb_ColMod2->setText("XYZ");
+    ui->pb_ColMod3->setText("HSL");
+    break;
+    case 13:
+    pb_colors[0] = RGB;
+    pb_colors[1] = XYZ;
+    pb_colors[2] = CMYK;
+    ui->pb_ColMod1->setText("RGB");
+    ui->pb_ColMod2->setText("XYZ");
+    ui->pb_ColMod3->setText("CMYK");
+    break;
+    case 14:
+    pb_colors[0] = CMYK;
+    pb_colors[1] = LAB;
+    pb_colors[2] = XYZ;
+    ui->pb_ColMod1->setText("CMYK");
+    ui->pb_ColMod2->setText("LAB");
+    ui->pb_ColMod3->setText("XYZ");
+    break;
+    case 15:
+    pb_colors[0] = RGB;
+    pb_colors[1] = CMYK;
+    pb_colors[2] = HSV;
+    ui->pb_ColMod1->setText("RGB");
+    ui->pb_ColMod2->setText("CMYK");
+    ui->pb_ColMod3->setText("HSV");
+    break;
+    case 16:
+    pb_colors[0] = CMYK;
+    pb_colors[1] = HSL;
+    pb_colors[2] = XYZ;
+    ui->pb_ColMod1->setText("CMYK");
+    ui->pb_ColMod2->setText("HSL");
+    ui->pb_ColMod3->setText("XYZ");
+    break;
+    case 17:
+    pb_colors[0] = RGB;
+    pb_colors[1] = HSL;
+    pb_colors[2] = LAB;
+    ui->pb_ColMod1->setText("RGB");
+    ui->pb_ColMod2->setText("HSL");
+    ui->pb_ColMod3->setText("LAB");
+    break;
+    case 18:
+    pb_colors[0] = CMYK;
+    pb_colors[1] = XYZ;
+    pb_colors[2] = RGB;
+    ui->pb_ColMod1->setText("CMYK");
+    ui->pb_ColMod2->setText("XYZ");
+    ui->pb_ColMod3->setText("RGB");
+    break;
+    }
     converter->setColMode(pb_colors[0]);
     updatePanel();
 }
