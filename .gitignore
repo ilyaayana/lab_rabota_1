@@ -22,7 +22,6 @@ core
 tags
 .DS_Store
 .directory
-*.debug
 Makefile*
 *.prl
 *.app
@@ -69,5 +68,4 @@ Thumbs.db
 # Binaries
 # --------
 *.dll
-*.exe
 
