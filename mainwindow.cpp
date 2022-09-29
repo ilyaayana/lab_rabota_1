@@ -267,10 +267,10 @@ void MainWindow::setVar(){
     case 6:
     pb_colors[0] = CMYK;
     pb_colors[1] = RGB;
-    pb_colors[2] = HSV;
+    pb_colors[2] = HSL;
     ui->pb_ColMod1->setText("CMYK");
     ui->pb_ColMod2->setText("RGB");
-    ui->pb_ColMod3->setText("HSV");
+    ui->pb_ColMod3->setText("HSL");
     break;
     case 7:
     pb_colors[0] = CMYK;
