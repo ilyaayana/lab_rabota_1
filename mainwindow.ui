@@ -347,92 +347,92 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="action1_2">
    <property name="text">
-    <string>1</string>
+    <string>RGB-LAB-CMYK</string>
    </property>
   </action>
   <action name="action2_2">
    <property name="text">
-    <string>2</string>
+    <string>RGB-CMYK-HSL</string>
    </property>
   </action>
   <action name="action3_2">
    <property name="text">
-    <string>3</string>
+    <string>RGB-XYZ-LAB</string>
    </property>
   </action>
   <action name="action4_2">
    <property name="text">
-    <string>4</string>
+    <string>RGB-HSV-LAB</string>
    </property>
   </action>
   <action name="action5_2">
    <property name="text">
-    <string>5</string>
+    <string>CMYK-LAB-HSV</string>
    </property>
   </action>
   <action name="action6_2">
    <property name="text">
-    <string>6</string>
+    <string>CMYK-RGB-HSL</string>
    </property>
   </action>
   <action name="action7_2">
    <property name="text">
-    <string>7</string>
+    <string>CMYK-RGB-HSV</string>
    </property>
   </action>
   <action name="action8_2">
    <property name="text">
-    <string>8</string>
+    <string>RGB-XYZ-HSV</string>
    </property>
   </action>
   <action name="action9_2">
    <property name="text">
-    <string>9</string>
+    <string>HSV-XYZ-LAB</string>
    </property>
   </action>
   <action name="action10_2">
    <property name="text">
-    <string>10</string>
+    <string>CMYK-LAB-RGB</string>
    </property>
   </action>
   <action name="action11_2">
    <property name="text">
-    <string>11</string>
+    <string>XYZ-LAB-HSL</string>
    </property>
   </action>
   <action name="action12_2">
    <property name="text">
-    <string>12</string>
+    <string>RGB-XYZ-HSL</string>
    </property>
   </action>
   <action name="action13_2">
    <property name="text">
-    <string>13</string>
+    <string>RGB-XYZ-CMYK</string>
    </property>
   </action>
   <action name="action14_2">
    <property name="text">
-    <string>14</string>
+    <string>CMYK-LAB-XYZ</string>
    </property>
   </action>
   <action name="action15_2">
    <property name="text">
-    <string>15</string>
+    <string>RGB-CMYK-HSV</string>
    </property>
   </action>
   <action name="action16">
    <property name="text">
-    <string>16</string>
+    <string>CMYK-HSL-XYZ</string>
    </property>
   </action>
   <action name="action17">
    <property name="text">
-    <string>17</string>
+    <string>RGB-HSL-LAB</string>
    </property>
   </action>
   <action name="action18">
    <property name="text">
-    <string>18</string>
+    <string>CMYK-XYZ-RGB</string>
    </property>
   </action>
  </widget>
